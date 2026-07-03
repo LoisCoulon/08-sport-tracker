@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { WorkoutTemplate } from '../types/WorkoutTemplate';
 import { mockWorkoutTemplates } from '../datas/mockWorkoutTemplate';
 
@@ -18,6 +18,28 @@ export default function WorkoutForm() {
     }
   }
 
+  function removeExerciseFromWarmup(index: number) {
+    if (!editableWorkout) return;
+    const newWarmup = editableWorkout.warmup.filter(
+      (exercise, i) => i !== index,
+    );
+    setEditableWorkout({ ...editableWorkout, warmup: newWarmup });
+  }
+
+  function removeExerciseFromSkills(index: number) {
+    if (!editableWorkout) return;
+    const newSkills = editableWorkout.skills.filter(
+      (exercise, i) => i !== index,
+    );
+    setEditableWorkout({ ...editableWorkout, skills: newSkills });
+  }
+
+  function removeExerciseFromWod(index: number) {
+    if (!editableWorkout) return;
+    const newWod = editableWorkout.wod.filter((exercise, i) => i !== index);
+    setEditableWorkout({ ...editableWorkout, wod: newWod });
+  }
+
   return (
     <div>
       <select onChange={handleSelectedType} name="types" id="types">
@@ -35,8 +57,14 @@ export default function WorkoutForm() {
               <p>{exercise.name}</p>
               {exercise.sets && <p>{exercise.sets} sets</p>}
               {exercise.reps && <p>{exercise.reps} répétitions</p>}
-              {exercise.duration && <p>{exercise.duration} min</p>}
+              {exercise.duration && <p>{exercise.duration} secondes</p>}
               {exercise.weight && <p>{exercise.weight} kg</p>}
+              <button
+                onClick={() => removeExerciseFromWarmup(index)}
+                className="text-red-500"
+              >
+                X
+              </button>
             </div>
           ))}
           <h3>Skills</h3>
@@ -45,8 +73,14 @@ export default function WorkoutForm() {
               <p>{exercise.name}</p>
               {exercise.sets && <p>{exercise.sets} sets</p>}
               {exercise.reps && <p>{exercise.reps} répétitions</p>}
-              {exercise.duration && <p>{exercise.duration} min</p>}
+              {exercise.duration && <p>{exercise.duration} secondes</p>}
               {exercise.weight && <p>{exercise.weight} kg</p>}
+              <button
+                onClick={() => removeExerciseFromSkills(index)}
+                className="text-red-500"
+              >
+                X
+              </button>
             </div>
           ))}
           <h3>WOD</h3>
@@ -55,8 +89,14 @@ export default function WorkoutForm() {
               <p>{exercise.name}</p>
               {exercise.sets && <p>{exercise.sets} sets</p>}
               {exercise.reps && <p>{exercise.reps} répétitions</p>}
-              {exercise.duration && <p>{exercise.duration} min</p>}
+              {exercise.duration && <p>{exercise.duration} secondes</p>}
               {exercise.weight && <p>{exercise.weight} kg</p>}
+              <button
+                onClick={() => removeExerciseFromWod(index)}
+                className="text-red-500"
+              >
+                X
+              </button>
             </div>
           ))}
         </div>
