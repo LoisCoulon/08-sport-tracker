@@ -4,12 +4,15 @@ import './index.css';
 import App from './App.tsx';
 import AuthProvider from './context/AuthContext.tsx';
 import { BrowserRouter } from 'react-router-dom';
+import WorkoutProvider from './context/WorkoutContext.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <App />
+        <WorkoutProvider>
+          <App />
+        </WorkoutProvider>
       </AuthProvider>
     </BrowserRouter>
   </StrictMode>,
