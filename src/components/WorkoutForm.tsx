@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { WorkoutTemplate } from '../types/WorkoutTemplate';
 import { mockWorkoutTemplates } from '../datas/mockWorkoutTemplate';
+import type { Exercise } from '../types/Exercise';
 
 export default function WorkoutForm() {
   const [selectedType, setSelectedType] = useState<
@@ -8,6 +9,10 @@ export default function WorkoutForm() {
   >();
   const [editableWorkout, setEditableWorkout] =
     useState<WorkoutTemplate | null>(null);
+  const [newExercise, setNewExercise] = useState<string>('');
+  const [isCreating, setIsCreating] = useState<
+    'warmup' | 'skills' | 'wod' | null
+  >(null);
 
   function handleSelectedType(event: React.ChangeEvent<HTMLSelectElement>) {
     const type = event.target.value as WorkoutTemplate['type'];
@@ -40,6 +45,37 @@ export default function WorkoutForm() {
     setEditableWorkout({ ...editableWorkout, wod: newWod });
   }
 
+  function addExerciseToWarmup(name: string) {
+    if (!editableWorkout) return;
+    const newExercise: Exercise = { name: name };
+    setEditableWorkout({
+      ...editableWorkout,
+      warmup: [...editableWorkout.warmup, newExercise],
+    });
+  }
+
+  function addExerciseToSkills(name: string) {
+    if (!editableWorkout) return;
+    const newExercise: Exercise = { name: name };
+    setEditableWorkout({
+      ...editableWorkout,
+      skills: [...editableWorkout.skills, newExercise],
+    });
+  }
+
+  function addExerciseToWod(name: string) {
+    if (!editableWorkout) return;
+    const newExercise: Exercise = { name: name };
+    setEditableWorkout({
+      ...editableWorkout,
+      wod: [...editableWorkout.wod, newExercise],
+    });
+  }
+
+  function handleNewExerciseForm(e: React.ChangeEvent<HTMLInputElement>) {
+    setNewExercise(e.target.value);
+  }
+
   return (
     <div>
       <select onChange={handleSelectedType} name="types" id="types">
@@ -52,6 +88,27 @@ export default function WorkoutForm() {
       {editableWorkout && (
         <div>
           <h3>Warmup</h3>
+          <button onClick={() => setIsCreating('warmup')}>
+            Ajouter un exercice
+          </button>
+          {isCreating === 'warmup' && (
+            <div>
+              <input
+                onChange={handleNewExerciseForm}
+                type="text"
+                placeholder="nouvel exercice"
+              />
+              <button
+                onClick={() => {
+                  addExerciseToWarmup(newExercise);
+                  setIsCreating(null);
+                  setNewExercise('');
+                }}
+              >
+                Ajouter
+              </button>
+            </div>
+          )}
           {editableWorkout.warmup.map((exercise, index) => (
             <div key={index}>
               <p>{exercise.name}</p>
@@ -68,6 +125,27 @@ export default function WorkoutForm() {
             </div>
           ))}
           <h3>Skills</h3>
+          <button onClick={() => setIsCreating('skills')}>
+            Ajouter un exercice
+          </button>
+          {isCreating === 'skills' && (
+            <div>
+              <input
+                onChange={handleNewExerciseForm}
+                type="text"
+                placeholder="nouvel exercice"
+              />
+              <button
+                onClick={() => {
+                  addExerciseToSkills(newExercise);
+                  setIsCreating(null);
+                  setNewExercise('');
+                }}
+              >
+                Ajouter
+              </button>
+            </div>
+          )}
           {editableWorkout.skills.map((exercise, index) => (
             <div className="" key={index}>
               <p>{exercise.name}</p>
@@ -84,6 +162,27 @@ export default function WorkoutForm() {
             </div>
           ))}
           <h3>WOD</h3>
+          <button onClick={() => setIsCreating('wod')}>
+            Ajouter un exercice
+          </button>
+          {isCreating === 'wod' && (
+            <div>
+              <input
+                onChange={handleNewExerciseForm}
+                type="text"
+                placeholder="nouvel exercice"
+              />
+              <button
+                onClick={() => {
+                  addExerciseToWod(newExercise);
+                  setIsCreating(null);
+                  setNewExercise('');
+                }}
+              >
+                Ajouter
+              </button>
+            </div>
+          )}
           {editableWorkout.wod.map((exercise, index) => (
             <div key={index}>
               <p>{exercise.name}</p>
