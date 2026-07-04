@@ -9,9 +9,6 @@ import type { Workout } from '../types/Workout';
 type ExerciseCategory = 'warmup' | 'skills' | 'wod';
 
 export default function WorkoutForm() {
-  const [selectedType, setSelectedType] = useState<
-    WorkoutTemplate['type'] | null
-  >();
   const [editableWorkout, setEditableWorkout] =
     useState<WorkoutTemplate | null>(null);
   const [newExercise, setNewExercise] = useState<string>('');
@@ -24,7 +21,7 @@ export default function WorkoutForm() {
   //handles the selected type of training to display custom exercises
   function handleSelectedType(event: React.ChangeEvent<HTMLSelectElement>) {
     const type = event.target.value as WorkoutTemplate['type'];
-    setSelectedType(type);
+
     const template = mockWorkoutTemplates.find((t) => t.type === type);
     if (template) {
       setEditableWorkout(template);
@@ -62,16 +59,13 @@ export default function WorkoutForm() {
 
     //clears the form
     setEditableWorkout(null);
-    setSelectedType(null);
   }
 
   //removes exercise from the selected category
   function removeExercise(category: ExerciseCategory, index: number) {
     if (!editableWorkout) return;
 
-    const newList = editableWorkout[category].filter(
-      (exercise, i) => i !== index,
-    );
+    const newList = editableWorkout[category].filter((_, i) => i !== index);
     setEditableWorkout({
       ...editableWorkout,
       [category]: newList,
