@@ -3,7 +3,7 @@ import WorkoutForm from '../components/WorkoutForm';
 import { useWorkouts } from '../context/useWorkouts';
 
 export default function Dashboard() {
-  const { workouts } = useWorkouts();
+  const { workouts, removeWorkout } = useWorkouts();
 
   return (
     <>
@@ -15,6 +15,12 @@ export default function Dashboard() {
             <div key={workout.id}>
               <p> {workout.date}</p>
               <p>{workout.type}</p>
+              <button
+                onClick={() => removeWorkout(workout.id)}
+                className="text-red-500"
+              >
+                X
+              </button>
             </div>
           ))}
         </div>
