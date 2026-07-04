@@ -2,6 +2,9 @@ import { useState } from 'react';
 import type { WorkoutTemplate } from '../types/WorkoutTemplate';
 import { mockWorkoutTemplates } from '../datas/mockWorkoutTemplate';
 import type { Exercise } from '../types/Exercise';
+import { useAuth } from '../context/useAuth';
+import { useWorkouts } from '../context/useWorkouts';
+import type { Workout } from '../types/Workout';
 
 export default function WorkoutForm() {
   const [selectedType, setSelectedType] = useState<
@@ -13,7 +16,10 @@ export default function WorkoutForm() {
   const [isCreating, setIsCreating] = useState<
     'warmup' | 'skills' | 'wod' | null
   >(null);
+  const { user } = useAuth();
+  const { addWorkout } = useWorkouts();
 
+  //handles the selected type of training to display custom exercises
   function handleSelectedType(event: React.ChangeEvent<HTMLSelectElement>) {
     const type = event.target.value as WorkoutTemplate['type'];
     setSelectedType(type);
@@ -45,6 +51,7 @@ export default function WorkoutForm() {
     setEditableWorkout({ ...editableWorkout, wod: newWod });
   }
 
+  //create a new exercise in the warmup section
   function addExerciseToWarmup(name: string) {
     if (!editableWorkout) return;
     const newExercise: Exercise = { name: name };
@@ -54,6 +61,7 @@ export default function WorkoutForm() {
     });
   }
 
+  //create a new exercise in the skills section
   function addExerciseToSkills(name: string) {
     if (!editableWorkout) return;
     const newExercise: Exercise = { name: name };
@@ -63,6 +71,7 @@ export default function WorkoutForm() {
     });
   }
 
+  //create a new exercise in the wod section
   function addExerciseToWod(name: string) {
     if (!editableWorkout) return;
     const newExercise: Exercise = { name: name };
@@ -72,8 +81,28 @@ export default function WorkoutForm() {
     });
   }
 
+  //Updates the exercises array when a new exercise is added
   function handleNewExerciseForm(e: React.ChangeEvent<HTMLInputElement>) {
     setNewExercise(e.target.value);
+  }
+
+  async function handleSaveWorkout() {
+    if (!editableWorkout || !user) return;
+
+    const newWorkout: Omit<Workout, 'id'> = {
+      user_id: user.id,
+      date: new Date().toISOString().split('T')[0], //YYYY-MM-DD format
+      type: editableWorkout.type,
+      warmup: editableWorkout.warmup,
+      skills: editableWorkout.skills,
+      wod: editableWorkout.wod,
+    };
+
+    await addWorkout(newWorkout);
+
+    //clears the form
+    setEditableWorkout(null);
+    setSelectedType(null);
   }
 
   return (
@@ -198,6 +227,7 @@ export default function WorkoutForm() {
               </button>
             </div>
           ))}
+          <button onClick={handleSaveWorkout}>Enregistrer la séance</button>
         </div>
       )}
     </div>
