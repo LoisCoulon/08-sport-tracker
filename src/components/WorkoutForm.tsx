@@ -6,6 +6,8 @@ import { useAuth } from '../context/useAuth';
 import { useWorkouts } from '../context/useWorkouts';
 import type { Workout } from '../types/Workout';
 
+type ExerciseCategory = 'warmup' | 'skills' | 'wod';
+
 export default function WorkoutForm() {
   const [selectedType, setSelectedType] = useState<
     WorkoutTemplate['type'] | null
@@ -29,55 +31,13 @@ export default function WorkoutForm() {
     }
   }
 
-  function removeExerciseFromWarmup(index: number) {
-    if (!editableWorkout) return;
-    const newWarmup = editableWorkout.warmup.filter(
-      (exercise, i) => i !== index,
-    );
-    setEditableWorkout({ ...editableWorkout, warmup: newWarmup });
-  }
-
-  function removeExerciseFromSkills(index: number) {
-    if (!editableWorkout) return;
-    const newSkills = editableWorkout.skills.filter(
-      (exercise, i) => i !== index,
-    );
-    setEditableWorkout({ ...editableWorkout, skills: newSkills });
-  }
-
-  function removeExerciseFromWod(index: number) {
-    if (!editableWorkout) return;
-    const newWod = editableWorkout.wod.filter((exercise, i) => i !== index);
-    setEditableWorkout({ ...editableWorkout, wod: newWod });
-  }
-
-  //create a new exercise in the warmup section
-  function addExerciseToWarmup(name: string) {
+  //creates a new exercise in the selected category
+  function addExercise(category: ExerciseCategory, name: string) {
     if (!editableWorkout) return;
     const newExercise: Exercise = { name: name };
     setEditableWorkout({
       ...editableWorkout,
-      warmup: [...editableWorkout.warmup, newExercise],
-    });
-  }
-
-  //create a new exercise in the skills section
-  function addExerciseToSkills(name: string) {
-    if (!editableWorkout) return;
-    const newExercise: Exercise = { name: name };
-    setEditableWorkout({
-      ...editableWorkout,
-      skills: [...editableWorkout.skills, newExercise],
-    });
-  }
-
-  //create a new exercise in the wod section
-  function addExerciseToWod(name: string) {
-    if (!editableWorkout) return;
-    const newExercise: Exercise = { name: name };
-    setEditableWorkout({
-      ...editableWorkout,
-      wod: [...editableWorkout.wod, newExercise],
+      [category]: [...editableWorkout[category], newExercise],
     });
   }
 
@@ -105,6 +65,19 @@ export default function WorkoutForm() {
     setSelectedType(null);
   }
 
+  //removes exercise from the selected category
+  function removeExercise(category: ExerciseCategory, index: number) {
+    if (!editableWorkout) return;
+
+    const newList = editableWorkout[category].filter(
+      (exercise, i) => i !== index,
+    );
+    setEditableWorkout({
+      ...editableWorkout,
+      [category]: newList,
+    });
+  }
+
   return (
     <div>
       <select onChange={handleSelectedType} name="types" id="types">
@@ -129,7 +102,7 @@ export default function WorkoutForm() {
               />
               <button
                 onClick={() => {
-                  addExerciseToWarmup(newExercise);
+                  addExercise('warmup', newExercise);
                   setIsCreating(null);
                   setNewExercise('');
                 }}
@@ -146,7 +119,7 @@ export default function WorkoutForm() {
               {exercise.duration && <p>{exercise.duration} secondes</p>}
               {exercise.weight && <p>{exercise.weight} kg</p>}
               <button
-                onClick={() => removeExerciseFromWarmup(index)}
+                onClick={() => removeExercise('warmup', index)}
                 className="text-red-500"
               >
                 X
@@ -166,7 +139,7 @@ export default function WorkoutForm() {
               />
               <button
                 onClick={() => {
-                  addExerciseToSkills(newExercise);
+                  addExercise('skills', newExercise);
                   setIsCreating(null);
                   setNewExercise('');
                 }}
@@ -183,7 +156,7 @@ export default function WorkoutForm() {
               {exercise.duration && <p>{exercise.duration} secondes</p>}
               {exercise.weight && <p>{exercise.weight} kg</p>}
               <button
-                onClick={() => removeExerciseFromSkills(index)}
+                onClick={() => removeExercise('skills', index)}
                 className="text-red-500"
               >
                 X
@@ -203,7 +176,7 @@ export default function WorkoutForm() {
               />
               <button
                 onClick={() => {
-                  addExerciseToWod(newExercise);
+                  addExercise('wod', newExercise);
                   setIsCreating(null);
                   setNewExercise('');
                 }}
@@ -220,7 +193,7 @@ export default function WorkoutForm() {
               {exercise.duration && <p>{exercise.duration} secondes</p>}
               {exercise.weight && <p>{exercise.weight} kg</p>}
               <button
-                onClick={() => removeExerciseFromWod(index)}
+                onClick={() => removeExercise('wod', index)}
                 className="text-red-500"
               >
                 X
