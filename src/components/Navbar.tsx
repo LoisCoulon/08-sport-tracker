@@ -19,19 +19,19 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="bg-[#111111] border-b border-[#2a2a2f] px-6 py-3 flex items-center justify-between">
-      <span className="text-white font-semibold text-lg tracking-tight">
-        Sport tracker
+    <nav className="bg-linear-to-r from-[#1a0a0a] via-[#141414] to-[#1a0a0a] border-b border-[#2a2a2a] px-8 py-4 flex items-center justify-between">
+      <span className="text-white font-bold text-2xl tracking-tight">
+        Sport Tracker
       </span>
-      <div className="flex gap-6">
+      <div className="flex items-center gap-6">
+        {error && <p className="text-red-400 text-xs">{error}</p>}
         <button
-          className="text-white font-semibold text-sm tracking-tight"
+          className="bg-transparent border border-gray-600 hover:border-white text-white text-sm font-medium px-4 py-1.5 rounded transition-colors"
           onClick={handleSignOut}
         >
           Déconnexion
         </button>
       </div>
-      {error && <p className="text-red-500 text-sm">{error}</p>}
     </nav>
   );
 }
