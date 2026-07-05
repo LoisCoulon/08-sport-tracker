@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { WorkoutTemplate } from '../types/WorkoutTemplate';
 import { mockWorkoutTemplates } from '../datas/mockWorkoutTemplate';
 import type { Exercise } from '../types/Exercise';
@@ -16,6 +16,8 @@ export default function WorkoutForm() {
     'warmup' | 'skills' | 'wod' | null
   >(null);
   const { user } = useAuth();
+  const [saveError, setSaveError] = useState<string>('');
+  const [saveSuccess, setSaveSuccess] = useState<boolean>(false);
   const { addWorkout } = useWorkouts();
 
   //handles the selected type of training to display custom exercises
@@ -54,11 +56,15 @@ export default function WorkoutForm() {
       skills: editableWorkout.skills,
       wod: editableWorkout.wod,
     };
-
-    await addWorkout(newWorkout);
-
-    //clears the form
-    setEditableWorkout(null);
+    try {
+      await addWorkout(newWorkout);
+      setSaveSuccess(true);
+      setEditableWorkout(null);
+    } catch (error) {
+      if (error instanceof Error) {
+        setSaveError(error.message);
+      }
+    }
   }
 
   //removes exercise from the selected category
@@ -72,8 +78,26 @@ export default function WorkoutForm() {
     });
   }
 
+  useEffect(() => {
+    if (!saveSuccess) return;
+    const timer = setTimeout(() => {
+      setSaveSuccess(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [saveSuccess]);
+
   return (
     <div>
+      {saveSuccess && (
+        <p className="bg-green-900/30 text-green-400 text-sm rounded px-4 py-2 mb-4">
+          Séance enregistrée avec succès ✅
+        </p>
+      )}
+      {saveError && (
+        <p className="bg-red-900/30 text-red-400 text-sm rounded px-4 py-2 mb-4">
+          {saveError}
+        </p>
+      )}
       <select
         onChange={handleSelectedType}
         name="types"
