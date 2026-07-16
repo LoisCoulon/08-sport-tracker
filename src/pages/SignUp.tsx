@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../context/useAuth';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 export default function SignUp() {
   const [email, setEmail] = useState<string>('');
@@ -32,6 +32,9 @@ export default function SignUp() {
     <div className="min-h-screen bg-[#141414] flex items-center justify-center px-4">
       {signUpSuccess ? (
         <div>
+          <NavLink className="text-white" to="/login">
+            ↩ Retour
+          </NavLink>
           <h1 className="text-white text-2xl font-bold mb-4">
             Vérifiez vos emails
           </h1>
